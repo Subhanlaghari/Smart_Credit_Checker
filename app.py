@@ -13,6 +13,20 @@ st.set_page_config(
 )
 
 # -----------------------------
+# FONT SIZE FIX
+# -----------------------------
+st.markdown("""
+    <style>
+    html, body, [class*="css"] {
+        font-size: 14px !important;
+    }
+    h1 { font-size: 24px !important; }
+    h2 { font-size: 20px !important; }
+    h3 { font-size: 17px !important; }
+    </style>
+""", unsafe_allow_html=True)
+
+# -----------------------------
 # LOAD MODEL FILES
 # -----------------------------
 BASE_DIR = os.path.dirname(__file__)
@@ -260,74 +274,56 @@ elif page == "🔍 Prediction":
             "Telephone": "A192",
             "Foreign_worker": "A201"
         }
-    if model is not None:
+
+        if model is not None:
 
             row = []
 
             for col in feature_columns:
-
                 value = raw_input[col]
-
                 if col in encoders:
                     value = encoders[col].transform([value])[0]
-
                 row.append(value)
 
             row_scaled = scaler.transform([row])
-
             prediction = model.predict(row_scaled)[0]
-
             probability = model.predict_proba(row_scaled)[0]
 
             st.markdown("---")
 
             if prediction == 1:
-
                 confidence = probability[0] * 100
-
                 st.success("## ✅ GOOD CREDIT")
 
                 col1, col2 = st.columns(2)
-
                 with col1:
                     st.metric("Prediction", "Good Credit")
                     st.metric("Confidence", f"{confidence:.2f}%")
-
                 with col2:
                     st.metric("Risk Level", "LOW")
                     st.metric("Loan Status", "APPROVED ✅")
 
                 st.subheader("Confidence Level")
                 st.progress(float(probability[0]))
-
-                st.info(
-                    "This customer has a very good credit profile. Loan approval is recommended."
-                )
+                st.info("This customer has a very good credit profile. Loan approval is recommended.")
 
             else:
-
                 confidence = probability[1] * 100
-
                 st.error("## ❌ BAD CREDIT")
 
                 col1, col2 = st.columns(2)
-
                 with col1:
                     st.metric("Prediction", "Bad Credit")
                     st.metric("Confidence", f"{confidence:.2f}%")
-
                 with col2:
                     st.metric("Risk Level", "HIGH")
                     st.metric("Loan Status", "REJECTED ❌")
 
                 st.subheader("Risk Level")
                 st.progress(float(probability[1]))
+                st.warning("High credit risk detected. Loan approval is not recommended.")
 
-                st.warning(
-                    "High credit risk detected. Loan approval is not recommended."
-                )
-
-    else:
+        else:
             st.error("❌ Model files could not be loaded. Please check all .pkl files.")
 
 # -----------------------------
