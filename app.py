@@ -414,7 +414,7 @@ and the **German Credit Dataset**.
 
     st.subheader("👨‍💻 Developer")
 
-    st.success("Subhan Laghari")
+    st.success("Subhan Qadir")
 
     st.caption("CodeAlpha Machine Learning Internship Project")
 
